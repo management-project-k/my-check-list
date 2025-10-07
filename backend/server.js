@@ -1,22 +1,31 @@
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
-import registerRoute from "./routes/register.js";
-import dashboardRoute from "./routes/dashboard.js";
+import bodyParser from "body-parser";
+
 import attendanceRoute from "./routes/attendance.js";
 import chatbotRoute from "./routes/chatbot.js";
+import dashboardRoute from "./routes/dashboard.js";
+import registerRoute from "./routes/register.js";
+import emailRoute from "./routes/email.js";
 
-dotenv.config();
 const app = express();
+const PORT = process.env.PORT || 5000;
+
 app.use(cors());
-app.use(express.json());
+app.use(bodyParser.json());
 
 // Routes
-app.use("/register", registerRoute);
-app.use("/dashboard", dashboardRoute);
-app.use("/attendance", attendanceRoute);
-app.use("/chatbot", chatbotRoute);
+app.use("/api/attendance", attendanceRoute);
+app.use("/api/chatbot", chatbotRoute);
+app.use("/api/dashboard", dashboardRoute);
+app.use("/api/register", registerRoute);
+app.use("/api/email", emailRoute);
 
-const PORT = process.env.PORT || 5000;
-app.get("/", (req, res) => res.send("SMS Backend Running"));
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Default route
+app.get("/", (req, res) => {
+  res.send("✅ SMS Backend is running successfully on Render!");
+});
+
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
