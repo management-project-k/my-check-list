@@ -1,10 +1,12 @@
 import express from "express";
+
 const router = express.Router();
 
-// Example Register Route
-router.post("/", (req, res) => {
-  const { name, email } = req.body;
-  res.json({ success: true, message: `Registered user: ${name} (${email})` });
+// Example registration route
+router.post("/", async (req, res) => {
+  const { userType, name, email, id } = req.body;
+  // Normally, save to Google Sheets or DB
+  res.json({ success: true, message: `${userType} registered successfully` });
 });
 
 export default router;
