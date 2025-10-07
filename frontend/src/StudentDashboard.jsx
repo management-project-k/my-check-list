@@ -1,25 +1,41 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import axios from "axios";
-const API = import.meta.env.VITE_API_BASE || "http://localhost:5000";
+import { getAttendance } from "./api.js";
 
-export default function StudentDashboard() {
-  const { sid } = useParams();
-  const [student, setStudent] = useState(null);
+function StudentDashboard() {
+  const [attendance, setAttendance] = useState([]);
 
   useEffect(() => {
-    if (!sid) return;
-    axios.get(`${API}/dashboard/student/${sid}`).then(r => setStudent(r.data));
-  }, [sid]);
+    async function fetchData() {
+      const res = await getAttendance();
+      setAttendance(res);
+    }
+    fetchData();
+  }, []);
 
-  if (!student) return <p>Loading...</p>;
   return (
-    <div>
-      <h2>{student[1]}</h2>
-      <p>Dept: {student[3]}</p>
-      <p>Email: {student[7]}</p>
-      <p>Fees: {student[9]}</p>
-      <p>Fines: {student[10]}</p>
+    <div style={{ textAlign: "center", marginTop: "50px" }}>
+      <h2>Student Dashboard</h2>
+      <h3>Your Attendance</h3>
+      <table border="1" style={{ margin: "0 auto" }}>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Subject</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {attendance.map((row, index) => (
+            <tr key={index}>
+              <td>{row[0]}</td>
+              <td>{row[1]}</td>
+              <td>{row[2]}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
+
+export default StudentDashboard;
