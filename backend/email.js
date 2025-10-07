@@ -1,9 +1,11 @@
+// backend/routes/email.js
 import express from "express";
 import nodemailer from "nodemailer";
 
 const router = express.Router();
 
-router.post("/", async (req, res) => {
+// Example: send email route
+router.post("/send", async (req, res) => {
   const { to, subject, text } = req.body;
 
   try {
@@ -22,10 +24,9 @@ router.post("/", async (req, res) => {
       text,
     });
 
-    res.json({ success: true, message: "Email sent successfully!" });
+    res.status(200).json({ message: "Email sent successfully" });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, message: "Failed to send email." });
+    res.status(500).json({ message: err.message });
   }
 });
 
