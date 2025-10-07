@@ -1,33 +1,31 @@
-// backend/routes/email.js
 import express from "express";
-import nodemailer from "nodemailer";
+import cors from "cors";
+import bodyParser from "body-parser";
 
-const router = express.Router();
+import attendanceRoute from "./routes/attendance.js";
+import chatbotRoute from "./routes/chatbot.js";
+import dashboardRoute from "./routes/dashboard.js";
+import registerRoute from "./routes/register.js";
+import emailRoute from "./routes/email.js"; // only once
 
-// Example: send email route
-router.post("/send", async (req, res) => {
-  const { to, subject, text } = req.body;
+const app = express();
+const PORT = process.env.PORT || 5000;
 
-  try {
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_PASS,
-      },
-    });
+app.use(cors());
+app.use(bodyParser.json());
 
-    await transporter.sendMail({
-      from: process.env.GMAIL_USER,
-      to,
-      subject,
-      text,
-    });
+// Routes
+app.use("/api/attendance", attendanceRoute);
+app.use("/api/chatbot", chatbotRoute);
+app.use("/api/dashboard", dashboardRoute);
+app.use("/api/register", registerRoute);
+app.use("/api/email", emailRoute);
 
-    res.status(200).json({ message: "Email sent successfully" });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
+// Default route
+app.get("/", (req, res) => {
+  res.send("✅ SMS Backend is running successfully on Render!");
 });
 
-export default router;
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
