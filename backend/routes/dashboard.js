@@ -1,9 +1,14 @@
 import express from "express";
+
 const router = express.Router();
 
-// Example Dashboard Route
+// Sample dashboard data
 router.get("/", (req, res) => {
-  res.json({ message: "Dashboard route connected!" });
+  res.json({
+    studentsCount: 120,
+    teachersCount: 10,
+    classesCount: 8,
+  });
 });
 
 export default router;
