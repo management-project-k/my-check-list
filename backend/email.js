@@ -1,23 +1,64 @@
-// backend/routes/email.js
+// backend/email.js
 import express from "express";
-import { google } from "googleapis";
-import fs from "fs";
-import path from "path";
+import nodemailer from "nodemailer";
 
 const router = express.Router();
 
-// Load service account credentials
-const credentialsPath = path.resolve("backend/routes/credentials.json");
-const credentials = JSON.parse(fs.readFileSync(credentialsPath, "utf8"));
-
-const SCOPES = ["https://www.googleapis.com/auth/gmail.send"];
-
-const auth = new google.auth.GoogleAuth({
-  credentials,
-  scopes: SCOPES,
+// Test route
+router.get("/", (req, res) => {
+  res.json({ message: "Email service is available" });
 });
 
-const gmail = google.gmail({ version: "v1", auth });
+// Send email route
+router.post("/send", async (req, res) => {
+  const { to, subject, text } = req.body;
 
-// Test route
-router.get("/", (req, res) =>
+  // Validate input
+  if (!to || !subject || !text) {
+    return res.status(400).json({ 
+      error: "Missing required fields", 
+      message: "to, subject, and text are required" 
+    });
+  }
+
+  // Check for email configuration
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    return res.status(500).json({ 
+      error: "Email not configured",
+      message: "Email service credentials not set. Please configure EMAIL_USER and EMAIL_PASS environment variables."
+    });
+  }
+
+  try {
+    // Create transporter
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    // Send email
+    const info = await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to,
+      subject,
+      text,
+    });
+
+    res.json({ 
+      success: true, 
+      message: "Email sent successfully",
+      messageId: info.messageId
+    });
+  } catch (err) {
+    console.error("Email error:", err.message);
+    res.status(500).json({ 
+      error: "Failed to send email",
+      message: err.message
+    });
+  }
+});
+
+export default router;
