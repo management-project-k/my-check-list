@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Signup / Signin</title>
+</head>
+<body>
+
+<h2>Signup</h2>
+<input type="text" id="signup-username" placeholder="Username">
+<input type="password" id="signup-password" placeholder="Password">
+<button onclick="signup()">Signup</button>
+
+<h2>Signin</h2>
+<input type="text" id="signin-username" placeholder="Username">
+<input type="password" id="signin-password" placeholder="Password">
+<button onclick="signin()">Signin</button>
+
+<p id="message"></p>
+
+<script>
+function signup() {
+    let formData = new FormData();
+    formData.append('action', 'signup');
+    formData.append('username', document.getElementById('signup-username').value);
+    formData.append('password', document.getElementById('signup-password').value);
+
+    fetch('api.php', { method: 'POST', body: formData })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById('message').innerText = data.message;
+    })
+    .catch(err => console.error(err));
+}
+
+function signin() {
+    let formData = new FormData();
+    formData.append('action', 'signin');
+    formData.append('username', document.getElementById('signin-username').value);
+    formData.append('password', document.getElementById('signin-password').value);
+
+    fetch('api.php', { method: 'POST', body: formData })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById('message').innerText = data.message;
+    })
+    .catch(err => console.error(err));
+}
+</script>
+
+</body>
+</html>
