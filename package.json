@@ -1,0 +1,16 @@
+{
+  "name": "daily-checklist",
+  "version": "1.0.0",
+  "description": "Daily checklist app with Google Sheets backend",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'No build needed'"
+  },
+  "dependencies": {
+    "googleapis": "^128.0.0"
+  },
+  "engines": {
+    "node": ">=18.x"
+  }
+}
