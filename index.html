@@ -1,53 +1,460 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Signup / Signin</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Checklist - My Routines</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #667eea;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #6c757d;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .date-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-btn:active {
+            transform: translateY(0);
+        }
+
+        .date-selector-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #dateSelector {
+            padding: 12px 15px;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        #dateSelector:focus {
+            border-color: #5568d3;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .today-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .today-btn:hover {
+            background: #218838;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+
+        .list-group {
+            margin-bottom: 20px;
+        }
+
+        .list-group-item {
+            transition: all 0.3s ease;
+            border-left: 4px solid #667eea;
+            margin-bottom: 12px;
+            border-radius: 8px !important;
+            padding: 15px;
+        }
+
+        .list-group-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .list-group-item.completed {
+            background-color: #e8f5e9;
+            border-left-color: #28a745;
+            opacity: 0.8;
+        }
+
+        .list-group-item.completed label {
+            text-decoration: line-through;
+            color: #6c757d;
+        }
+
+        input[type="checkbox"] {
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+
+        .time-badge {
+            background: #667eea;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            font-weight: 500;
+            display: inline-block;
+            min-width: 150px;
+            text-align: center;
+        }
+
+        .activity-text {
+            font-size: 1.1em;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #667eea;
+            font-size: 1.2em;
+        }
+
+        .loading i {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        .no-tasks {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+
+        .no-tasks i {
+            font-size: 3em;
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #dc3545;
+        }
+
+        .progress-bar-container {
+            margin-bottom: 25px;
+        }
+
+        .progress {
+            height: 30px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.5s ease;
+            font-weight: bold;
+            font-size: 1em;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            .date-navigation {
+                flex-direction: column;
+            }
+
+            .nav-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            #dateSelector {
+                width: 100%;
+            }
+
+            .time-badge {
+                min-width: auto;
+                font-size: 0.8em;
+            }
+
+            .activity-text {
+                font-size: 1em;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <h1><i class="fas fa-clipboard-check"></i> My Daily Checklist</h1>
+        <p class="subtitle">Track your daily routine & stay productive</p>
+        
+        <div class="date-navigation">
+            <button class="nav-btn" onclick="changeDate(-1)">
+                <i class="fas fa-chevron-left"></i> Previous Day
+            </button>
+            
+            <div class="date-selector-wrapper">
+                <input type="date" id="dateSelector" class="form-control">
+                <button class="today-btn" onclick="goToToday()">
+                    <i class="fas fa-calendar-day"></i> Today
+                </button>
+            </div>
+            
+            <button class="nav-btn" onclick="changeDate(1)">
+                Next Day <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
 
-<h2>Signup</h2>
-<input type="text" id="signup-username" placeholder="Username">
-<input type="password" id="signup-password" placeholder="Password">
-<button onclick="signup()">Signup</button>
+        <div class="progress-bar-container">
+            <div class="progress">
+                <div class="progress-bar" id="progressBar" role="progressbar" style="width: 0%">0%</div>
+            </div>
+        </div>
 
-<h2>Signin</h2>
-<input type="text" id="signin-username" placeholder="Username">
-<input type="password" id="signin-password" placeholder="Password">
-<button onclick="signin()">Signin</button>
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-number" id="totalTasks">0</div>
+                <div class="stat-label">Total Tasks</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="completedTasks">0</div>
+                <div class="stat-label">Completed</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="remainingTasks">0</div>
+                <div class="stat-label">Remaining</div>
+            </div>
+        </div>
+        
+        <div id="checklist" class="list-group">
+            <div class="loading">
+                <i class="fas fa-spinner"></i> Loading your schedule...
+            </div>
+        </div>
+    </div>
 
-<p id="message"></p>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    
+    <script>
+        const API_URL = '/api/sheets';
+        let currentDate = new Date();
+        let allTasks = [];
 
-<script>
-function signup() {
-    let formData = new FormData();
-    formData.append('action', 'signup');
-    formData.append('username', document.getElementById('signup-username').value);
-    formData.append('password', document.getElementById('signup-password').value);
+        // Initialize date selector with today's date
+        function initDateSelector() {
+            const dateInput = document.getElementById('dateSelector');
+            dateInput.value = formatDate(currentDate);
+            dateInput.addEventListener('change', function() {
+                currentDate = new Date(this.value + 'T00:00:00');
+                loadTasks();
+            });
+        }
 
-    fetch('api.php', { method: 'POST', body: formData })
-    .then(res => res.json())
-    .then(data => {
-        document.getElementById('message').innerText = data.message;
-    })
-    .catch(err => console.error(err));
-}
+        // Format date as YYYY-MM-DD
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
 
-function signin() {
-    let formData = new FormData();
-    formData.append('action', 'signin');
-    formData.append('username', document.getElementById('signin-username').value);
-    formData.append('password', document.getElementById('signin-password').value);
+        // Change date by days (positive or negative)
+        function changeDate(days) {
+            currentDate.setDate(currentDate.getDate() + days);
+            document.getElementById('dateSelector').value = formatDate(currentDate);
+            loadTasks();
+        }
 
-    fetch('api.php', { method: 'POST', body: formData })
-    .then(res => res.json())
-    .then(data => {
-        document.getElementById('message').innerText = data.message;
-    })
-    .catch(err => console.error(err));
-}
-</script>
+        // Go to today
+        function goToToday() {
+            currentDate = new Date();
+            document.getElementById('dateSelector').value = formatDate(currentDate);
+            loadTasks();
+        }
 
+        // Load tasks from API
+        async function loadTasks() {
+            try {
+                const dateStr = formatDate(currentDate);
+                const response = await axios.get(`${API_URL}?date=${dateStr}`);
+                const data = response.data;
+                allTasks = data.tasks;
+                displayTasks(data.tasks, data.date);
+                updateStats();
+            } catch (error) {
+                console.error('Error loading tasks:', error);
+                document.getElementById('checklist').innerHTML = `
+                    <div class="error">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Error:</strong> Failed to load tasks. ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // Display tasks
+        function displayTasks(tasks, date) {
+            const checklist = document.getElementById('checklist');
+            
+            if (tasks.length === 0) {
+                checklist.innerHTML = `
+                    <div class="no-tasks">
+                        <i class="fas fa-inbox"></i>
+                        <p>No tasks found for ${date}</p>
+                        <p style="font-size: 0.9em;">Add tasks to your Google Sheet to get started!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            checklist.innerHTML = tasks.map((task, index) => `
+                <div class="list-group-item ${task.completed ? 'completed' : ''}" id="task-${index}">
+                    <div class="d-flex align-items-center">
+                        <input type="checkbox" 
+                               id="check${index}" 
+                               ${task.completed ? 'checked' : ''} 
+                               onchange="updateTask(${task.row}, this.checked, ${index})"
+                               class="me-3">
+                        <label for="check${index}" class="flex-grow-1 mb-0 d-flex align-items-center flex-wrap gap-2">
+                            <span class="time-badge">${task.time}</span>
+                            <span class="activity-text">${task.activity}</span>
+                        </label>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update task status
+        async function updateTask(row, completed, index) {
+            try {
+                await axios.post(API_URL, { row, completed });
+                
+                const taskElement = document.getElementById(`task-${index}`);
+                if (completed) {
+                    taskElement.classList.add('completed');
+                    allTasks[index].completed = true;
+                } else {
+                    taskElement.classList.remove('completed');
+                    allTasks[index].completed = false;
+                }
+                
+                updateStats();
+            } catch (error) {
+                console.error('Error updating task:', error);
+                alert('Failed to update task. Please try again.');
+            }
+        }
+
+        // Update statistics
+        function updateStats() {
+            const total = allTasks.length;
+            const completed = allTasks.filter(t => t.completed).length;
+            const remaining = total - completed;
+            const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+            document.getElementById('totalTasks').textContent = total;
+            document.getElementById('completedTasks').textContent = completed;
+            document.getElementById('remainingTasks').textContent = remaining;
+            
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = percentage + '%';
+            progressBar.textContent = percentage + '%';
+        }
+
+        // Initialize on page load
+        window.onload = function() {
+            initDateSelector();
+            loadTasks();
+        };
+    </script>
 </body>
 </html>
